@@ -11,7 +11,11 @@ from dotenv import load_dotenv
 
 load_dotenv ()
 
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "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")
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+if not OPENROUTER_API_KEY:
+    raise EnvironmentError(
+        "OPENROUTER_API_KEY environment variable is not set."
+    )
 OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL", "nvidia/nemotron-3-nano-30b-a3b:free")
 
 

@@ -60,9 +60,9 @@ from pdf_download import download_pdf as _download_pdf
 import extract_and_explain as _xae 
 
 
-_DEFAULT_PAPERS_DIR =os .environ .get (
-"ARXIV_PAPERS_DIR",
-os .path .join (_ROOT ,"arxiv_papers"),
+_DEFAULT_PAPERS_DIR = os.environ.get(
+    "ARXIV_PAPERS_DIR",
+    "/tmp/arxiv_papers",
 )
 
 
@@ -248,23 +248,26 @@ def analyze_paper (arxiv_id :str ,output_root :str ="")-> dict:
       workflow_path       – absolute path to <paper>_workflow.md
       implementation_path – absolute path to <paper>_implementation.py
     """
-    root =output_root .strip ()or _DEFAULT_PAPERS_DIR 
+    root = output_root.strip() or _DEFAULT_PAPERS_DIR
 
+    print(f"\n{'='*60}")
+    print(f"    ANALYZE PAPER: {arxiv_id}")
+    print(f"{'='*60}")
+    pdf_path = _download_pdf(arxiv_id, output_root=root)
 
-    print (f"\n{'='*60 }")
-    print (f"    ANALYZE PAPER: {arxiv_id }")
-    print (f"{'='*60 }")
-    pdf_path =_download_pdf (arxiv_id ,output_root =root )
-
-
-    paper_dir =os .path .dirname (pdf_path )
-    results =_xae .extract_all (pdf_path ,output_dir =paper_dir )
+    paper_dir = os.path.dirname(pdf_path)
+    results = _xae.extract_all(pdf_path, output_dir=paper_dir)
 
     return {
-    "pdf_path":pdf_path ,
-    "formulas_path":results ["formulas_path"],
-    "workflow_path":results ["workflow_path"],
-    "implementation_path":results ["implementation_path"],
+        "pdf_path": pdf_path,
+        "formulas_path": results["formulas_path"],
+        "workflow_path": results["workflow_path"],
+        "implementation_path": results["implementation_path"],
+        # Actual content — the paths above are server-local and unreachable
+        # by remote MCP clients, so the content is returned inline.
+        "formulas": results.get("formulas_content", ""),
+        "workflow": results.get("workflow_content", ""),
+        "implementation": results.get("implementation_content", ""),
     }
 
 if __name__ =="__main__":
