@@ -1,0 +1,2 @@
+arxiv_paper_search = "https://export.arxiv.org/api/query?search_query=ti:"
+arxiv_paper_download = "https://arxiv.org/pdf/"
